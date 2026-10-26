@@ -1,714 +1,673 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FM24 Moneyball</title>
-<style>
-  :root{--bg:#0b1120;--card:#1e293b;--accent:#22d3ee;--text:#e2e8f0;--good:#4ade80;--mid:#facc15;--bad:#f87171}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);padding:20px;line-height:1.5}
-  .container{max-width:1300px;margin:0 auto}
-  h1{font-size:1.8rem;margin-bottom:6px}
-  .card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid #334155}
-  select,textarea,input[type=file],input[type=checkbox]{background:#0f172a;border:1px solid #475569;color:var(--text);padding:10px;border-radius:8px;font-size:15px}
-  select,textarea,input[type=file]{width:100%;margin-top:8px}
-  button{background:var(--accent);color:#0f172a;border:none;padding:13px 28px;border-radius:8px;font-weight:700;cursor:pointer;margin-top:12px;font-size:15px}
-  button:hover{filter:brightness(1.1)}
-  .top3{ display: flex; flex-direction: column; gap: 12px; margin-top: 16px; max-height: 70vh; overflow-y: auto; padding-right: 8px; }
-  .player-card{background:#0f172a;border-radius:10px;padding:16px;border-left:5px solid var(--accent)}
-  .player-card h3{font-size:1.15rem;margin-bottom:4px}
-  .score{font-size:1.7rem;font-weight:800;margin:8px 0}
-  .score-high{color:var(--good)}.score-mid{color:var(--mid)}.score-low{color:var(--bad)}
-  .stats-list{font-size:13px;margin-top:8px;opacity:.9}
-  .info{font-size:13px;opacity:.75;margin:8px 0}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Examen de Biología - Objetivo 10</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
 </head>
-<body>
-<div class="container">
-  <h1>⚽ FM24 Moneyball</h1>
-  <p style="opacity:.8;margin-bottom:20px">Filtrado por posición + comparación con tu plantilla</p>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-  <div class="card">
-    <h2>1. Elige el rol</h2>
-    <select id="roleSelect">
-      <option value="GK">Portero Cierre – Ataque</option>
-      <option value="WBR">Carrilero Derecho – Apoyo</option>
-      <option value="WBL">Carrilero Izquierdo – Apoyo</option>
-      <option value="CB">Defensa con Toque – Defensa</option>
-      <option value="DM">Pivote Organizador – Defensa</option>
-      <option value="CM">Centrocampista – Apoyo</option>
-      <option value="AP">Organizador Adelantado – Ataque</option>
-      <option value="IFR">Delantero Interior Derecho – Apoyo</option>
-      <option value="IFL">Delantero Interior Izquierdo – Apoyo</option>
-      <option value="F9">Falso Nueve – Apoyo</option>
-    </select>
-  </div>
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-teal-700 via-emerald-600 to-teal-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white/20 p-2.5 rounded-xl backdrop-blur-md">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-extrabold tracking-tight">Simulador de Examen de Biología</h1>
+                    <p class="text-xs md:text-sm text-emerald-100 font-medium">UD1 (Organización) • UD2 (La Célula) • UD3 (Genética)</p>
+                </div>
+            </div>
 
-  <div class="card">
-    <h2>2. Datos</h2>
-    
-    <p class="info">Archivo del <strong>mercado</strong> (jugadores a evaluar)</p>
-    <input type="file" id="fileInput" accept=".html,.htm,.csv,.txt">
-    
-    <p class="info" style="margin-top:16px">Archivo de tu <strong>plantilla actual</strong> (opcional)</p>
-    <input type="file" id="squadInput" accept=".html,.htm,.csv,.txt">
-    
-    <div style="margin:16px 0;display:flex;align-items:center;gap:10px">
-      <input type="checkbox" id="useDiscard" checked style="width:18px;height:18px">
-      <label for="useDiscard">Aplicar filtros de descarte previo</label>
-    </div>
+            <!-- Header Controls -->
+            <div class="flex items-center space-x-3">
+                <div id="timerDisplay" class="bg-slate-900/60 text-emerald-300 font-mono text-sm px-3 py-1.5 rounded-lg border border-emerald-500/30 flex items-center space-x-2">
+                    <svg class="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span id="timeRemaining">50:00</span>
+                </div>
+                <button onclick="generateNewExam()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs md:text-sm px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all transform active:scale-95 flex items-center space-x-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    <span>Nuevo Examen</span>
+                </button>
+            </div>
+        </div>
+    </header>
 
-    <textarea id="rawData" rows="6" placeholder="O pega aquí la tabla del mercado..."></textarea>
-    <button onclick="calculate()">Calcular Top 3</button>
-  </div>
+    <!-- Main Content Layout -->
+    <main class="max-w-6xl mx-auto px-4 py-6 flex-grow w-full grid grid-cols-1 lg:grid-cols-4 gap-6">
 
-  <div class="card">
-  <h2>3. Resultados</h2>
-  <div style="display: grid; grid-template-columns: 1fr 320px; gap: 20px;">
-    <div id="results">
-      <p style="opacity:.6">Aquí aparecerán los resultados del mercado</p>
-    </div>
-    
-    <!-- Panel de tu plantilla -->
-    <div id="squadPanel" style="background:#0f172a; border-radius:12px; padding:16px; border:1px solid #334155;">
-      <h3 style="margin-bottom:12px; font-size:1.1rem;">Tu plantilla (posición actual)</h3>
-      <div id="squadList">
-        <p style="opacity:.6; font-size:13px;">Sube tu plantilla para ver la comparación</p>
-      </div>
-    </div>
-  </div>
-</div>
+        <!-- Sidebar / Reinforcement Config -->
+        <aside class="lg:col-span-1 space-y-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="font-bold text-slate-900 text-sm tracking-wide uppercase mb-3 flex items-center space-x-2">
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                    <span>Área de Refuerzo</span>
+                </h2>
+                <p class="text-xs text-slate-500 mb-4">Selecciona una unidad para priorizar sus preguntas en las simulaciones:</p>
+                <div class="space-y-2 text-sm">
+                    <label class="flex items-center space-x-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors border border-transparent hover:border-slate-200">
+                        <input type="radio" name="priorityTopic" value="ALL" checked onclick="setPriority('ALL')" class="text-emerald-600 focus:ring-emerald-500">
+                        <span class="text-slate-700 font-medium">Equilibrado (Todas)</span>
+                    </label>
+                    <label class="flex items-center space-x-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors border border-transparent hover:border-slate-200">
+                        <input type="radio" name="priorityTopic" value="UD1" onclick="setPriority('UD1')" class="text-emerald-600 focus:ring-emerald-500">
+                        <span class="text-slate-700 font-medium">UD1: Niveles y Funciones</span>
+                    </label>
+                    <label class="flex items-center space-x-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors border border-transparent hover:border-slate-200">
+                        <input type="radio" name="priorityTopic" value="UD2" onclick="setPriority('UD2')" class="text-emerald-600 focus:ring-emerald-500">
+                        <span class="text-slate-700 font-medium">UD2: La Célula</span>
+                    </label>
+                    <label class="flex items-center space-x-2.5 p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors border border-transparent hover:border-slate-200">
+                        <input type="radio" name="priorityTopic" value="UD3" onclick="setPriority('UD3')" class="text-emerald-600 focus:ring-emerald-500">
+                        <span class="text-slate-700 font-medium">UD3: Genética Mendeliana</span>
+                    </label>
+                </div>
+            </div>
 
-<script>
-const roleProfiles = {
-  GK: {
-    name: "Portero Cierre – Ataque",
-    description: "Solo POR · Errores = 0 · % Pase > 80%",
-    positions: ["POR"],
-    discard: [
-      { keys: ["GL ERR", "Errores que costaron goles", "errores que costaron goles"], mustBe: 0 },
-      { keys: ["% PASE", "% Pase", "Ratio de pases completados", "% pase"], mustBeGreaterThan: 80 }
-    ],
-    metrics: [
-      { keys: ["% PASE", "% Pase", "Ratio de pases completados", "% pase"], weight: 0.35 },
-      { keys: ["XGE/90", "xGE/90", "Goles esperados evitados/90", "xg evitados/90", "XGE"], weight: 0.25 },
-      { keys: ["DIST/90", "Distancia cubierta/90", "Distancia", "DIST"], weight: 0.20 },
-      { keys: ["PASES PROG/90", "Pases progresivos/90", "Pases prog/90", "PASES PROG"], weight: 0.15 },
-      { keys: ["REG/90", "Regates/90", "Regates realizados/90", "REG"], weight: 0.05 }
-    ]
-  },
-  WBR: {
-  name: "Carrilero Derecho – Apoyo",
-  description: "Solo laterales derechos · % Pase > 80% · Ent P > 65%",
-  positions: [
-  "DF (D)", "DF (DC)", "DF (DI)", "DF (DIC)",
-  "DF/CR (D)", "DF/ME (D)", "DF/MP (D)",
-  "DF/CR/ME (D)", "DF/CR/MP (D)", "DF/ME/MP (D)", "DF/CR/ME/MP (D)"
-  ],
-  discard: [
-    { keys: ["% PASE", "% Pase", "Ratio de pases completados", "% pase"], mustBeGreaterThan: 80 },
-    { keys: ["ENT P", "Ent P", "Ratio entradas completadas", "Ratio de entradas"], mustBeGreaterThan: 65 }
-  ],
-  metrics: [
-    { keys: ["DIST/90", "Distancia cubierta/90", "Distancia", "DIST"], weight: 0.15 },
-    { keys: ["ESPRINTS/90", "Esprints de alta intensidad/90", "Esprints", "ESPRINTS"], weight: 0.15 },
-    { keys: ["ENT P", "Ent P", "Ratio entradas completadas", "Ratio de entradas"], weight: 0.15 },
-    { keys: ["POS GAN/90", "Posesiones ganadas/90", "POS GAN", "Rob/90"], weight: 0.10 },
-    { keys: ["CEN C-JA/90", "Centros completados en juego abierto/90", "CEN C-JA", "Centros"], weight: 0.15 },
-    { keys: ["P CLV-J AB/90", "Pases clave en juego abierto/90", "P CLV-J AB", "Pases clave"], weight: 0.10 },
-    { keys: ["% PASE", "% Pase", "Ratio de pases completados"], weight: 0.10 },
-    { keys: ["PASES PROG/90", "Pases progresivos/90", "PASES PROG", "Pases progresivos"], weight: 0.10 }
-  ]
-},
+            <!-- Structure Info Box -->
+            <div class="bg-emerald-50/70 p-5 rounded-2xl border border-emerald-100">
+                <h3 class="font-bold text-emerald-900 text-xs uppercase tracking-wider mb-2">Estructura Oficial del Examen</h3>
+                <ul class="text-xs text-emerald-800 space-y-2">
+                    <li class="flex justify-between items-center"><span class="font-medium">• Test UD1 y UD2 (5 preg):</span> <span class="bg-emerald-200/60 px-2 py-0.5 rounded font-bold">2.0 pts</span></li>
+                    <li class="flex justify-between items-center"><span class="font-medium">• Test UD3 (5 preg):</span> <span class="bg-emerald-200/60 px-2 py-0.5 rounded font-bold">2.0 pts</span></li>
+                    <li class="flex justify-between items-center"><span class="font-medium">• 3 Preguntas Cortas:</span> <span class="bg-emerald-200/60 px-2 py-0.5 rounded font-bold">3.6 pts</span></li>
+                    <li class="flex justify-between items-center"><span class="font-medium">• 2 Problemas Genética:</span> <span class="bg-emerald-200/60 px-2 py-0.5 rounded font-bold">2.4 pts</span></li>
+                </ul>
+            </div>
+        </aside>
 
-WBL: {
-  name: "Carrilero Izquierdo – Apoyo",
-  description: "Solo laterales izquierdos · % Pase > 80% · Ent P > 65%",
-  positions: [
-  "DF (I)", "DF (IC)", "DF (DI)", "DF (DIC)",
-  "DF/CR (I)", "DF/ME (I)", "DF/MP (I)",
-  "DF/CR/ME (I)", "DF/CR/MP (I)", "DF/ME/MP (I)", "DF/CR/ME/MP (I)"
-],
-  discard: [
-    { keys: ["% PASE", "% Pase", "Ratio de pases completados", "% pase"], mustBeGreaterThan: 80 },
-    { keys: ["ENT P", "Ent P", "Ratio entradas completadas", "Ratio de entradas"], mustBeGreaterThan: 65 }
-  ],
-  metrics: [
-    { keys: ["DIST/90", "Distancia cubierta/90", "Distancia", "DIST"], weight: 0.15 },
-    { keys: ["ESPRINTS/90", "Esprints de alta intensidad/90", "Esprints", "ESPRINTS"], weight: 0.15 },
-    { keys: ["ENT P", "Ent P", "Ratio entradas completadas", "Ratio de entradas"], weight: 0.15 },
-    { keys: ["POS GAN/90", "Posesiones ganadas/90", "POS GAN", "Rob/90"], weight: 0.10 },
-    { keys: ["CEN C-JA/90", "Centros completados en juego abierto/90", "CEN C-JA", "Centros"], weight: 0.15 },
-    { keys: ["P CLV-J AB/90", "Pases clave en juego abierto/90", "P CLV-J AB", "Pases clave"], weight: 0.10 },
-    { keys: ["% PASE", "% Pase", "Ratio de pases completados"], weight: 0.10 },
-    { keys: ["PASES PROG/90", "Pases progresivos/90", "PASES PROG", "Pases progresivos"], weight: 0.10 }
-  ]
-},
-  CB: {
-  name: "Defensa con Toque – Defensa",
-  description: "Centrales · Errores = 0 · % Pase > 86% · Cabezazos > 65%",
-  positions: ["DF (C)", "DF (DC)", "DF (IC)", "DF (DIC)", "DF/ME (C)"],
-  discard: [
-    { keys: ["GL ERR", "Errores que costaron goles", "errores que costaron goles"], mustBe: 0 },
-    { keys: ["% PASE", "% Pase", "Ratio de pases completados", "% pase"], mustBeGreaterThan: 86 },
-    { keys: ["RC G %", "Ratio de cabezazos ganados", "Cabezazos ganados %", "RC G", "% Cabezazos"], mustBeGreaterThan: 65 }
-  ],
-  metrics: [
-    { keys: ["PASES PROG/90", "Pases progresivos/90", "Pases progresivos", "PASES PROG"], weight: 0.20 },
-    { keys: ["% PASE", "% Pase", "Ratio de pases completados", "% pase"], weight: 0.15 },
-    { keys: ["ENT P", "Ent P", "Ratio de entradas completadas", "Ratio entradas", "% Entradas"], weight: 0.15 },
-    { keys: ["RC G %", "Ratio de cabezazos ganados", "Cabezazos ganados %", "RC G", "% Cabezazos"], weight: 0.15 },
-    { keys: ["POS GAN/90", "Posesiones ganadas/90", "POS GAN", "Posesiones ganadas"], weight: 0.15 },
-    { keys: ["ENT CLV/90", "Entradas clave/90", "ENT CLV", "Entradas clave"], weight: 0.10 },
-    { keys: ["DESP/90", "Despejes/90", "DESP", "Despejes"], weight: 0.10 }
-  ]
-},
-  DM: {
-  name: "Pivote Organizador – Defensa",
-  description: "Solo MC (C) y MC, ME (C) · Errores = 0 · % Pase > 88% · Ent P > 65%",
-  positions: [
-    "MC (C)",
-    "MC, ME (C)"
-  ],
-  discard: [
-    { keys: ["GL ERR", "Errores que costaron goles", "errores que costaron goles"], mustBe: 0 },
-    { keys: ["% PASE", "% Pase", "Ratio de pases completados", "% pase"], mustBeGreaterThan: 88 },
-    { keys: ["ENT P", "Ent P", "Ratio de entradas completadas", "Ratio entradas", "% Entradas"], mustBeGreaterThan: 65 }
-  ],
-  metrics: [
-    { keys: ["POS GAN/90", "Posesiones ganadas/90", "POS GAN", "Posesiones ganadas"], weight: 0.15 },
-    { keys: ["PRES C/90", "Presiones completadas/90", "PRES C", "Presiones completadas", "Presiones"], weight: 0.10 },
-    { keys: ["ENT P", "Ent P", "Ratio de entradas completadas", "Ratio entradas", "% Entradas"], weight: 0.10 },
-    { keys: ["% PASE", "% Pase", "Ratio de pases completados", "% pase"], weight: 0.20 },
-    { keys: ["PS C/90", "Pases completados/90", "PS C", "Pases completados"], weight: 0.10 },
-    { keys: ["DIST/90", "Distancia cubierta/90", "Distancia", "DIST"], weight: 0.15 },
-    { keys: ["RC G %", "Ratio de cabezazos ganados", "Cabezazos ganados %", "RC G", "% Cabezazos"], weight: 0.10 },
-    { keys: ["RECH/90", "Rechaces/90", "RECH", "Rechaces"], weight: 0.10 }
-  ]
-},
-  CM: {
-  name: "Centrocampista – Apoyo",
-  description: "Solo ME (C) · MC, ME (C) · ME/MP (C) · Errores = 0 · % Pase > 83%",
-  positions: [
-    "ME (C)",
-    "MC, ME (C)",
-    "ME/MP (C)"
-  ],
-  discard: [
-    { keys: ["GL ERR", "Errores que costaron goles", "errores que costaron goles"], mustBe: 0 },
-    { keys: ["% PASE", "% Pase", "Ratio de pases completados", "% pase"], mustBeGreaterThan: 83 }
-  ],
-  metrics: [
-    { keys: ["P CLV-J AB/90", "Pases clave en juego abierto/90", "P CLV-J AB", "Pases clave"], weight: 0.15 },
-    { keys: ["OC C/90", "Ocasiones creadas/90", "OC C", "Ocasiones creadas"], weight: 0.10 },
-    { keys: ["% PASE", "% Pase", "Ratio de pases completados", "% pase"], weight: 0.10 },
-    { keys: ["DIST/90", "Distancia cubierta/90", "Distancia", "DIST"], weight: 0.15 },
-    { keys: ["ESPRINTS/90", "Esprints de alta intensidad/90", "Esprints", "ESPRINTS"], weight: 0.15 },
-    { keys: ["XG-SP/90", "Goles esperados sin penaltis/90", "XG-SP", "xG sin penaltis"], weight: 0.12 },
-    { keys: ["% DISPAROS", "Porcentaje de tiros a puerta", "% Disparos", "% tiros a puerta"], weight: 0.08 },
-    { keys: ["PRES C/90", "Presiones completadas/90", "PRES C", "Presiones completadas"], weight: 0.15 }
-  ]
-},
-  AP: {
-  name: "Organizador Adelantado – Ataque",
-  description: "Solo ME (C) · MC, ME (C) · ME/MP (C) · Regates/90 entre 1.2-1.5 · Errores = 0",
-  positions: [
-    "ME (C)",
-    "MC, ME (C)",
-    "ME/MP (C)"
-  ],
-  discard: [
-    { keys: ["GL ERR", "Errores que costaron goles", "errores que costaron goles"], mustBe: 0 },
-    { keys: ["REG/90", "Regates/90", "Regates realizados/90", "REG"], mustBeBetween: [1.2, 1.5] }
-  ],
-  metrics: [
-    { keys: ["P CLV-J AB/90", "Pases clave en juego abierto/90", "P CLV-J AB", "Pases clave"], weight: 0.15 },
-    { keys: ["ASIE/90", "Asistencias esperadas/90", "ASIE", "xA"], weight: 0.15 },
-    { keys: ["OC C/90", "Ocasiones creadas/90", "OC C", "Ocasiones creadas"], weight: 0.10 },
-    { keys: ["REG/90", "Regates/90", "Regates realizados/90", "REG"], weight: 0.15 },
-    { keys: ["PASES PROG/90", "Pases progresivos/90", "PASES PROG", "Pases progresivos"], weight: 0.10 },
-    { keys: ["PS C/90", "Pases completados/90", "PS C", "Pases completados"], weight: 0.10 },
-    { keys: ["% PASE", "% Pase", "Ratio de pases completados", "% pase"], weight: 0.10 },
-    { keys: ["DIST/90", "Distancia cubierta/90", "Distancia", "DIST"], weight: 0.10 },
-    { keys: ["PRES C/90", "Presiones completadas/90", "PRES C", "Presiones completadas"], weight: 0.05 }
-  ]
-},
-  IFR: {
-  name: "Delantero Interior Derecho – Apoyo",
-  description: "Solo posiciones derechas · Regates/90 > 1.5 · Errores = 0",
-  positions: [
-    "MP (DC)",
-    "MP (DIC)",
-    "MP (DI)",
-    "MP (D)",
-    "ME/MP (DI)",
-    "ME/MP (D)",
-    "DF/MP (D)",
-    "DF/CR/ME/MP (D)"
-  ],
-  discard: [
-    { keys: ["GL ERR", "Errores que costaron goles", "errores que costaron goles"], mustBe: 0 },
-    { keys: ["REG/90", "Regates/90", "Regates realizados/90", "REG"], mustBeGreaterThan: 1.5 }
-  ],
-  metrics: [
-    { keys: ["XG-SP/90", "XG - SP/90", "Goles esperados sin penaltis/90", "XG-SP", "xG sin penaltis"], weight: 0.15 },
-    { keys: ["GOL/90", "Goles/90", "Goles"], weight: 0.10 },
-    { keys: ["% CONV", "Ratio de conversión", "% Conversión", "Conversión"], weight: 0.10 },
-    { keys: ["REG/90", "Regates/90", "Regates realizados/90", "REG"], weight: 0.15 },
-    { keys: ["P CLV-J AB/90", "Pases clave en juego abierto/90", "P CLV-J AB", "Pases clave"], weight: 0.15 },
-    { keys: ["PRES C/90", "Presiones completadas/90", "PRES C", "Presiones completadas"], weight: 0.12 },
-    { keys: ["POS GAN/90", "Posesiones ganadas/90", "POS GAN", "Posesiones ganadas"], weight: 0.08 },
-    { keys: ["ESPRINTS/90", "Esprints de alta intensidad/90", "Esprints", "ESPRINTS"], weight: 0.08 },
-    { keys: ["% PASE", "% Pase", "Ratio de pases completados", "% pase"], weight: 0.07 }
-  ]
-},
-IFL: {
-  name: "Delantero Interior Izquierdo – Apoyo",
-  description: "Solo posiciones izquierdas · Regates/90 > 1.5 · Errores = 0",
-  positions: [
-    "MP (IC)",
-    "MP (I)",
-    "MP (DIC)",
-    "MP (DI)",
-    "ME/MP (I)",
-    "ME/MP (DI)",
-    "DF/MP (I)",
-    "DF/ME/MP (I)"
-  ],
-  discard: [
-    { keys: ["GL ERR", "Errores que costaron goles", "errores que costaron goles"], mustBe: 0 },
-    { keys: ["REG/90", "Regates/90", "Regates realizados/90", "REG"], mustBeGreaterThan: 1.5 }
-  ],
-  metrics: [
-    { keys: ["XG-SP/90", "XG - SP/90", "Goles esperados sin penaltis/90", "XG-SP", "xG sin penaltis"], weight: 0.15 },
-    { keys: ["GOL/90", "Goles/90", "Goles"], weight: 0.10 },
-    { keys: ["% CONV", "Ratio de conversión", "% Conversión", "Conversión"], weight: 0.10 },
-    { keys: ["REG/90", "Regates/90", "Regates realizados/90", "REG"], weight: 0.15 },
-    { keys: ["P CLV-J AB/90", "Pases clave en juego abierto/90", "P CLV-J AB", "Pases clave"], weight: 0.15 },
-    { keys: ["PRES C/90", "Presiones completadas/90", "PRES C", "Presiones completadas"], weight: 0.12 },
-    { keys: ["POS GAN/90", "Posesiones ganadas/90", "POS GAN", "Posesiones ganadas"], weight: 0.08 },
-    { keys: ["ESPRINTS/90", "Esprints de alta intensidad/90", "Esprints", "ESPRINTS"], weight: 0.08 },
-    { keys: ["% PASE", "% Pase", "Ratio de pases completados", "% pase"], weight: 0.07 }
-  ]
-},
-  F9: {
-  name: "Falso Nueve – Apoyo",
-  description: "Solo DL (C) · % Pase > 80% · Errores = 0",
-  positions: [
-    "DL (C)"
-  ],
-  discard: [
-    { keys: ["GL ERR", "Errores que costaron goles", "errores que costaron goles"], mustBe: 0 },
-    { keys: ["% PASE", "% Pase", "Ratio de pases completados", "% pase"], mustBeGreaterThan: 80 }
-  ],
-  metrics: [
-    { keys: ["OC C/90", "Ocasiones creadas/90", "OC C", "Ocasiones creadas"], weight: 0.15 },
-    { keys: ["GOL/90", "Goles/90", "Goles"], weight: 0.10 },
-    { keys: ["P CLV-J AB/90", "Pases clave en juego abierto/90", "P CLV-J AB", "Pases clave"], weight: 0.15 },
-    { keys: ["ASIE/90", "Asistencias esperadas/90", "ASIE", "xA"], weight: 0.10 },
-    { keys: ["REG/90", "Regates/90", "Regates realizados/90", "REG"], weight: 0.15 },
-    { keys: ["% PASE", "% Pase", "Ratio de pases completados", "% pase"], weight: 0.10 },
-    { keys: ["% CONV", "Ratio de conversión", "% Conversión", "Conversión"], weight: 0.10 },
-    { keys: ["XG-SP/90", "XG - SP/90", "Goles esperados sin penaltis/90", "XG-SP", "xG sin penaltis"], weight: 0.10 },
-    { keys: ["DIST/90", "Distancia cubierta/90", "Distancia", "DIST"], weight: 0.08 },
-    { keys: ["PRES C/90", "Presiones completadas/90", "PRES C", "Presiones completadas"], weight: 0.07 }
-  ]
-}
-};
+        <!-- Exam Workspace Area -->
+        <section class="lg:col-span-3 space-y-6">
 
-let squadPlayers = [];
+            <!-- Result Summary Banner (Initially Hidden) -->
+            <div id="resultsBanner" class="hidden bg-white p-6 rounded-2xl shadow-lg border border-slate-200 transition-all">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div>
+                        <span class="text-xs uppercase font-bold text-slate-400 tracking-wider">Resultado Global</span>
+                        <div class="flex items-baseline space-x-2 mt-1">
+                            <h2 id="finalScoreDisplay" class="text-4xl font-extrabold text-slate-900">0.0</h2>
+                            <span class="text-lg font-bold text-slate-400">/ 10.0</span>
+                        </div>
+                        <p id="gradeFeedback" class="text-sm font-medium mt-1 text-slate-600">Completa y corrige el examen para evaluar tu desempeño.</p>
+                    </div>
 
-function normalize(s) {
-  return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9\/\%]/g,' ').replace(/\s+/g,' ').trim();
-}
+                    <!-- Detailed Breakdown -->
+                    <div class="grid grid-cols-2 gap-3 w-full md:w-auto text-center text-xs">
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <span class="block text-slate-400 font-semibold">Test UD1-2</span>
+                            <span id="scoreTestUD12" class="font-extrabold text-slate-800 text-sm">0 / 2.0</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <span class="block text-slate-400 font-semibold">Test UD3</span>
+                            <span id="scoreTestUD3" class="font-extrabold text-slate-800 text-sm">0 / 2.0</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <span class="block text-slate-400 font-semibold">Preg. Cortas</span>
+                            <span id="scoreShort" class="font-extrabold text-slate-800 text-sm">0 / 3.6</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <span class="block text-slate-400 font-semibold">Problemas</span>
+                            <span id="scoreProblems" class="font-extrabold text-slate-800 text-sm">0 / 2.4</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-function findValue(p, keys) {
-  for (const k of keys) {
-    const nk = normalize(k);
-    for (const pk of Object.keys(p)) {
-      if (normalize(pk).includes(nk) || nk.includes(normalize(pk))) {
-        const val = parseFloat(String(p[pk]).replace(',','.').replace(/[^\d.-]/g,''));
-        if (!isNaN(val)) return {val, col: pk};
-      }
-    }
-  }
-  return {val:0, col:null};
-}
+            <!-- Exam Container Form -->
+            <form id="examForm" onsubmit="event.preventDefault(); evaluateExam();" class="space-y-6">
+                
+                <!-- SECTION 1: TEST UD1 & UD2 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="border-b border-slate-100 pb-4 mb-6 flex justify-between items-center">
+                        <div>
+                            <span class="text-xs font-bold text-emerald-600 tracking-wider uppercase">Parte I</span>
+                            <h2 class="text-lg font-extrabold text-slate-900">Test Bloque 1: UD1 y UD2 (2.0 Puntos)</h2>
+                        </div>
+                        <span class="text-xs font-medium text-slate-400">5 Preguntas (0.4 pt c/u)</span>
+                    </div>
+                    <div id="testUD12Container" class="space-y-6"></div>
+                </div>
 
-function getName(p) {
-  // 1. Buscar la columna Nombre (con o sin tilde)
-  let rawName = p['Nombre'] || p['Nombre '] || p['Name'] || p['nombre'] || p['NAME'] || '';
+                <!-- SECTION 2: TEST UD3 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="border-b border-slate-100 pb-4 mb-6 flex justify-between items-center">
+                        <div>
+                            <span class="text-xs font-bold text-emerald-600 tracking-wider uppercase">Parte II</span>
+                            <h2 class="text-lg font-extrabold text-slate-900">Test Bloque 2: Genética UD3 (2.0 Puntos)</h2>
+                        </div>
+                        <span class="text-xs font-medium text-slate-400">5 Preguntas (0.4 pt c/u)</span>
+                    </div>
+                    <div id="testUD3Container" class="space-y-6"></div>
+                </div>
 
-  rawName = rawName.trim();
+                <!-- SECTION 3: SHORT QUESTIONS -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="border-b border-slate-100 pb-4 mb-6 flex justify-between items-center">
+                        <div>
+                            <span class="text-xs font-bold text-emerald-600 tracking-wider uppercase">Parte III</span>
+                            <h2 class="text-lg font-extrabold text-slate-900">Preguntas de Desarrollo Corto (3.6 Puntos)</h2>
+                        </div>
+                        <span class="text-xs font-medium text-slate-400">3 Cuestiones (1.2 pts c/u)</span>
+                    </div>
+                    <div id="shortQuestionsContainer" class="space-y-6"></div>
+                </div>
 
-  // Si está vacío, buscar cualquier columna que parezca un nombre
-  if (!rawName || rawName === '-' || rawName === '--') {
-    for (const key of Object.keys(p)) {
-      const val = (p[key] || '').trim();
-      if (val.length > 5 && /[a-záéíóúñ]/i.test(val) && val.includes(' - ')) {
-        rawName = val;
-        break;
-      }
-    }
-  }
+                <!-- SECTION 4: GENETICS PROBLEMS -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="border-b border-slate-100 pb-4 mb-6 flex justify-between items-center">
+                        <div>
+                            <span class="text-xs font-bold text-emerald-600 tracking-wider uppercase">Parte IV</span>
+                            <h2 class="text-lg font-extrabold text-slate-900">Problemas de Genética (2.4 Puntos)</h2>
+                        </div>
+                        <span class="text-xs font-medium text-slate-400">2 Problemas de 1 Carácter (1.2 pts c/u)</span>
+                    </div>
+                    <div id="geneticsProblemsContainer" class="space-y-8"></div>
+                </div>
 
-  if (!rawName || rawName === '-' || rawName === '--') {
-    return 'Desconocido';
-  }
+                <!-- Action Button Container -->
+                <div class="flex justify-end pt-4 pb-12">
+                    <button id="submitBtn" type="submit" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-base px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform active:scale-95 flex items-center justify-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Finalizar Examen y Corregir</span>
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
 
-  // 2. Quitar la nacionalidad (todo lo que va después de " - ")
-  // Ejemplo: "Luis Fernández - Español" → "Luis Fernández"
-  if (rawName.includes(' - ')) {
-    rawName = rawName.split(' - ')[0].trim();
-  }
+    <script>
+        // EXPANDED QUESTION BANK STRICTLY BOUND TO SLIDES
+        const testUD12Bank = [
+            {
+                id: "ud12_1", topic: "UD1",
+                question: "¿Cuál de los siguientes pares representa un nivel ABIÓTICO y uno BIÓTICO respectivamente?",
+                options: ["Célula y Tejido", "Molécula de glucosa y Tejido muscular", "Aparato digestivo y Órgano", "Átomo de Carbono y Molécula de agua"],
+                correctText: "Molécula de glucosa y Tejido muscular",
+                explanation: "Las moléculas son abióticas (sin vida), mientras que los tejidos son agregados de células (nivel biótico)."
+            },
+            {
+                id: "ud12_2", topic: "UD1",
+                question: "¿Qué biomoléculas son inorgánicas y presentes en los seres vivos?",
+                options: ["Glúcidos y Lípidos", "Proteínas y Ácidos nucleicos", "Agua y Sales minerales", "Vitaminas y Enzimas"],
+                correctText: "Agua y Sales minerales",
+                explanation: "El agua y las sales minerales son biomoléculas inorgánicas. Glúcidos, lípidos, proteínas y ácidos nucleicos son orgánicos."
+            },
+            {
+                id: "ud12_3", topic: "UD1",
+                question: "¿Qué aparatos colaboran directamente en la función de NUTRICIÓN humana?",
+                options: ["Aparato Locomotor y Sistema Nervioso", "Aparato Digestivo, Respiratorio, Circulatorio y Excretor", "Sistema Endocrino y Aparato Reproductor", "Únicamente el Aparato Digestivo"],
+                correctText: "Aparato Digestivo, Respiratorio, Circulatorio y Excretor",
+                explanation: "La nutrición integra Digestivo (nutrientes), Respiratorio (O2/CO2), Circulatorio (transporte) y Excretor (desechos)."
+            },
+            {
+                id: "ud12_4", topic: "UD2",
+                question: "Según los postulados de la Teoría Celular, se establece que:",
+                options: ["Toda célula procede de la generación espontánea", "La célula es la unidad estructural, funcional y de origen de todos los seres vivos", "Solo los animales están compuestos por células", "Las células procariotas contienen núcleo definido"],
+                correctText: "La célula es la unidad estructural, funcional y de origen de todos los seres vivos",
+                explanation: "La Teoría Celular postula que la célula es la unidad anatómica, fisiológica y vital de todo organismo."
+            },
+            {
+                id: "ud12_5", topic: "UD2",
+                question: "¿Qué estructura es EXCLUSIVA de las células vegetales en comparación con las animales?",
+                options: ["Mitocondrias y Ribosomas", "Pared celular de celulosa y Cloroplastos", "Centrosoma con centriolos", "Membrana plasmática y Citoplasma"],
+                correctText: "Pared celular de celulosa y Cloroplastos",
+                explanation: "Las células vegetales poseen pared celular de celulosa y cloroplastos para realizar fotosíntesis."
+            },
+            {
+                id: "ud12_6", topic: "UD2",
+                question: "¿Cuál es la función principal del Mitocondria?",
+                options: ["Síntesis de proteínas", "Almacenar el material genético", "Respiración celular para obtener energía (ATP)", "Realizar la fotosíntesis"],
+                correctText: "Respiración celular para obtener energía (ATP)",
+                explanation: "Las mitocondrias realizan la respiración celular aeróbica para sintetizar la energía en forma de ATP."
+            },
+            {
+                id: "ud12_7", topic: "UD2",
+                question: "¿En qué estado se encuentra el ADN celular durante la Interfase?",
+                options: ["Condensado en cromosomas visibles", "Descondensado formando la cromatina", "Dividido en diploides e haploides", "Empaquetado en centriolos"],
+                correctText: "Descondensado formando la cromatina",
+                explanation: "Durante la interfase el ADN está descondensado y extendido dentro del núcleo como cromatina."
+            },
+            {
+                id: "ud12_8", topic: "UD2",
+                question: "¿Cuál es la importancia biológica fundamental de la MEIOSIS?",
+                options: ["Mantener el número diploide de cromosomas en crecimiento", "Producir células idénticas a la progenitora", "Reducir los cromosomas a la mitad (haploides) y aportar variabilidad genética", "Formar la pared celular"],
+                correctText: "Reducir los cromosomas a la mitad (haploides) y aportar variabilidad genética",
+                explanation: "La meiosis reduce a la mitad la dotación cromosómica en gametos y genera diversidad por recombinación."
+            },
+            {
+                id: "ud12_9", topic: "UD2",
+                question: "¿Cómo ocurre la Citocinesis en células vegetales a diferencia de las animales?",
+                options: ["Por estrangulamiento de un anillo contráctil", "Por formación del Fragmoplasto (tabique de vesículas del Golgi)", "No ocurre citocinesis en vegetales", "Por gemación nuclear"],
+                correctText: "Por formación del Fragmoplasto (tabique de vesículas del Golgi)",
+                explanation: "Debido a la rigidez de la pared celular, las células vegetales forman un tabique interior o fragmoplasto."
+            },
+            {
+                id: "ud12_10", topic: "UD2",
+                question: "¿Qué diferencia principal existe entre células procariotas y eucariotas?",
+                options: ["Las procariotas tienen mitocondrias y las eucariotas no", "Las procariotas carecen de núcleo delimitado por membrana; su ADN está libre", "Las eucariotas no poseen ribosomas", "Las procariotas son siempre pluricelulares"],
+                correctText: "Las procariotas carecen de núcleo delimitado por membrana; su ADN está libre",
+                explanation: "El material genético procariota flota en el nucleoide sin envoltura nuclear que lo separe del citoplasma."
+            },
+            {
+                id: "ud12_11", topic: "UD1",
+                question: "¿A qué nivel de organización pertenece un Glóbulos Rojo o Eritrocito?",
+                options: ["Nivel de Molécula", "Nivel Celular", "Nivel de Tejido", "Nivel de Órgano"],
+                correctText: "Nivel Celular",
+                explanation: "El eritrocito o glóbulo rojo es una célula especializada de la sangre (nivel celular)."
+            },
+            {
+                id: "ud12_12", topic: "UD2",
+                question: "¿Qué orgánulo es el encargado de la síntesis de proteínas en la célula?",
+                options: ["Lisosoma", "Ribosoma", "Aparato de Golgi", "Vacuola"],
+                correctText: "Ribosoma",
+                explanation: "Los ribosomas leen el ARN y ensamblan aminoácidos para sintetizar proteínas."
+            }
+        ];
 
-  return rawName;
-}
+        const testUD3Bank = [
+            {
+                id: "ud3_1", topic: "UD3",
+                question: "¿Qué postula la 1ª Ley de Mendel (Uniformidad de la F1)?",
+                options: ["Los caracteres se separan en la F2 en proporción 3:1", "Al cruzar dos razas puras (homocigóticas), todos los descendientes de la F1 son idénticos en genotipo y fenotipo", "Los alelos codominantes se mezclan en la generación F2", "Cada gen se hereda de manera completamente independiente de los demás"],
+                correctText: "Al cruzar dos razas puras (homocigóticas), todos los descendientes de la F1 son idénticos en genotipo y fenotipo",
+                explanation: "El cruce de AA x aa da un 100% de heterocigotos Aa que expresan el fenotipo del alelo dominante."
+            },
+            {
+                id: "ud3_2", topic: "UD3",
+                question: "Al cruzar dos individuos heterocigóticos (Aa x Aa) con dominancia completa, ¿cuál es la proporción FENOTÍPICA esperada en la F2 (2ª Ley de Mendel)?",
+                options: ["100% recesivos", "50% dominantes y 50% recesivos", "75% fenotipo dominante y 25% fenotipo recesivo (3:1)", "25% dominantes, 50% intermedios, 25% recesivos"],
+                correctText: "75% fenotipo dominante y 25% fenotipo recesivo (3:1)",
+                explanation: "La segregación de Aa x Aa produce 1 AA, 2 Aa y 1 aa, resultando en un 75% dominante y 25% recesivo."
+            },
+            {
+                id: "ud3_3", topic: "UD3",
+                question: "En la Herencia Intermedia, al cruzar una flor roja (RR) con una blanca (BB):",
+                options: ["Todas las flores descendientes serán rojas", "El fenotipo heterocigoto (RB) expresa un carácter intermedio (flores rosas)", "El 50% serán rojas y el 50% blancas", "Aparecen manchas rojas y blancas en los mismos pétalos"],
+                correctText: "El fenotipo heterocigoto (RB) expresa un carácter intermedio (flores rosas)",
+                explanation: "En la herencia incompleta ningún alelo domina, dando origen a un fenotipo intermedio mezcla de ambos."
+            },
+            {
+                id: "ud3_4", topic: "UD3",
+                question: "¿En qué consiste la CODOMINANCIA?",
+                options: ["Un alelo enmascara totalmente al otro", "Ambos alelos se expresan con la misma intensidad simultáneamente en el heterocigoto", "La pérdida de un cromosoma", "La mezcla continua de los dos caracteres"],
+                correctText: "Ambos alelos se expresan con la misma intensidad simultáneamente en el heterocigoto",
+                explanation: "En codominancia, ambos caracteres se manifiestan a la vez (ej. ganado roano con pelos blancos y rojos intercalados)."
+            },
+            {
+                id: "ud3_5", topic: "UD3",
+                question: "Un individuo que posee dos alelos idénticos para un carácter (ej. AA o aa) se denomina:",
+                options: ["Heterocigótico o Híbrido", "Homocigótico o Raza Pura", "Cromosoma homólogo", "Fenotípicamente incompleto"],
+                correctText: "Homocigótico o Raza Pura",
+                explanation: "Un individuo es homocigoto cuando sus dos alelos para dicho gen son totalmente iguales."
+            },
+            {
+                id: "ud3_6", topic: "UD3",
+                question: "¿Qué es el GENOTIPO de un organismo?",
+                options: ["Los rasgos observables en el individuo influidos por el entorno", "El conjunto de alelos o genes que posee un organismo en su ADN", "El número total de células diploides", "La fase de la mitosis"],
+                correctText: "El conjunto de alelos o genes que posee un organismo en su ADN",
+                explanation: "El genotipo representa la configuración genética única del ser vivo, mientras que el fenotipo es su manifestación visible."
+            },
+            {
+                id: "ud3_7", topic: "UD3",
+                question: "Si el alelo para semilla amarilla (A) domina sobre verde (a), ¿qué genotipo tendrá obligatoriamente una semilla verde?",
+                options: ["AA", "Aa", "aa", "Puede ser Aa o aa"],
+                correctText: "aa",
+                explanation: "Para manifestar el fenotipo recesivo (verde), la planta debe presentar un genotipo homocigoto recesivo (aa)."
+            },
+            {
+                id: "ud3_8", topic: "UD3",
+                question: "¿Qué proporción GENOTÍPICA se obtiene al cruzar dos heterocigotos (Aa x Aa)?",
+                options: ["100% Aa", "50% AA y 50% aa", "25% AA, 50% Aa, 25% aa (1:2:1)", "75% Aa y 25% aa"],
+                correctText: "25% AA, 50% Aa, 25% aa (1:2:1)",
+                explanation: "El cuadro de Punnett para Aa x Aa arroja: 1/4 AA, 2/4 Aa y 1/4 aa."
+            }
+        ];
 
-  function getPlayerPosition(p) {
-  if (p['Posición'] && p['Posición'].trim()) return p['Posición'].trim();
-  if (p['Posicion'] && p['Posicion'].trim()) return p['Posicion'].trim();
-  if (p['Position'] && p['Position'].trim()) return p['Position'].trim();
-  if (p['Pos'] && p['Pos'].trim()) return p['Pos'].trim();
-  for (const key of Object.keys(p)) {
-    const k = key.toLowerCase();
-    if (k.includes('posici') || k.includes('position') || k === 'pos') return (p[key]||'').trim();
-  }
-  return '';
-}
+        const shortQuestionsBank = [
+            {
+                id: "sq_1", topic: "UD1", title: "Niveles de Organización Abióticos y Bióticos",
+                question: "Define 'Nivel Abiótico' y 'Nivel Biótico'. Ordena de menor a mayor complejidad: *Tejido epitelial, Átomo de Nitrógeno, Célula muscular, Organismo (Humano), Molécula de glucosa*.",
+                guideAnswer: "• Nivel Abiótico: Sin vida propia (átomos, moléculas, complejos macromoleculares).\n• Nivel Biótico: Con vida (desde la célula en adelante).\n• Orden: Átomo de Nitrógeno < Molécula de glucosa < Célula muscular < Tejido epitelial < Organismo."
+            },
+            {
+                id: "sq_2", topic: "UD1", title: "Aparatos y Funciones Vitales Humanas",
+                question: "Enumera las 3 funciones vitales del ser humano. Indica qué aparatos o sistemas participan específicamente en la función de RELACIÓN.",
+                guideAnswer: "• Funciones vitales: Nutrición, Relación y Reproducción.\n• Aparatos/Sistemas de Relación: Órganos de los sentidos, Sistema Nervioso, Sistema Endocrino y Aparato Locomotor."
+            },
+            {
+                id: "sq_3", topic: "UD2", title: "Teoría Celular y Diferenciación Celular",
+                question: "a) Enuncia 2 postulados principales de la Teoría Celular.\nb) ¿En qué consiste la diferenciación celular en organismos pluricelulares?",
+                guideAnswer: "a) Postulados: 1) Todo ser vivo está formado por células. 2) La célula es la unidad estructural y funcional de la vida. 3) Toda célula procede de otra preexistente.\nb) Diferenciación celular: Proceso en el que células no especializadas modifican su estructura y genes para realizar una función concreta."
+            },
+            {
+                id: "sq_4", topic: "UD2", title: "Célula Animal vs. Célula Vegetal",
+                question: "Cita 3 diferencias estructurales u orgánulos clave que distingan a una célula vegetal de una célula animal.",
+                guideAnswer: "1) Pared celular de celulosa (vegetal presente, animal ausente).\n2) Cloroplastos para fotosíntesis (vegetal presente, animal ausente).\n3) Vacuolas grandes y únicas en vegetales; pequeñas o ausentes en animales."
+            },
+            {
+                id: "sq_5", topic: "UD2", title: "Importancia de la Mitosis y Meiosis",
+                question: "Compara brevemente la Mitosis y la Meiosis indicando: tipo de células en las que ocurre, número de células hijas resultantes y su finalidad biológica.",
+                guideAnswer: "• Mitosis: Ocurre en células somáticas; produce 2 células hijas diploides (2n) idénticas. Finalidad: Crecimiento y reparación de tejidos.\n• Meiosis: Ocurre en células germinales; produce 4 células hijas haploides (n) variadas. Finalidad: Formación de gametos para reproducción sexual."
+            },
+            {
+                id: "sq_6", topic: "UD2", title: "Estado del ADN: Cromatina y Cromosomas",
+                question: "Explica la relación entre la cromatina y los cromosomas. ¿En qué momento del ciclo celular se observa cada una de estas formas?",
+                guideAnswer: "• Es la misma sustancia (ADN asociado a proteínas/histonas).\n• Cromatina: Forma descondensada. Se observa durante la INTERFASE.\n• Cromosomas: Forma condensada máxima. Se observa durante la DIVISIÓN CELULAR."
+            }
+        ];
 
-function matchesPosition(playerPos, allowed, roleKey = null) {
-  if (!playerPos) return false;
+        const geneticsProblemsBank = [
+            {
+                id: "gp_1", topic: "UD3", title: "Problema de 1er Carácter: Dominancia Completa (Cobayas)",
+                question: "En las cobayas, el pelo negro (N) domina sobre el pelo blanco (n). Cruzamos un macho de pelo negro puro (homocigótico) con una hembra de pelo blanco.\na) Indica los genotipos y fenotipos de la F1.\nb) Si se cruzan dos individuos de la F1 entre sí, determina las proporciones genotípicas y fenotípicas de la F2.",
+                guideAnswer: "a) Cruce inicial (P): NN (negro) x nn (blanco)\n• Genotipo F1: 100% Nn (Heterocigóticos)\n• Fenotipo F1: 100% Pelo negro.\n\nb) Cruce F1 x F1: Nn x Nn\n• Genotipos F2: 25% NN, 50% Nn, 25% nn (1:2:1)\n• Fenotipos F2: 75% Pelo negro, 25% Pelo blanco (3:1)."
+            },
+            {
+                id: "gp_2", topic: "UD3", title: "Problema de Herencia Intermedia (Dondiego de noche)",
+                question: "En las plantas de Dondiego de noche, el color de las flores presenta herencia intermedia: flores rojas (RR) y blancas (BB). Los heterocigotos (RB) tienen flores rosas.\na) ¿Qué descendencia fenotípica y genotípica se obtiene al cruzar una flor rosa con una flor blanca?\nb) ¿Y al cruzar dos flores rosas?",
+                guideAnswer: "a) Cruce: RB (rosa) x BB (blanca)\n• Genotipos: 50% RB, 50% BB\n• Fenotipos: 50% Flores rosas, 50% Flores blancas.\n\nb) Cruce: RB (rosa) x RB (rosa)\n• Genotipos: 25% RR, 50% RB, 25% BB (1:2:1)\n• Fenotipos: 25% Rojas, 50% Rosas, 25% Blancas."
+            },
+            {
+                id: "gp_3", topic: "UD3", title: "Problema de Codominancia (Pelaje Vacuno)",
+                question: "En una raza bovina, el color del pelo está controlado por dos alelos codominantes: R (rojo) y B (blanco). Los heterocigotos (RB) presentan manchas rojas y blancas (roano).\nUn granjero cruza un toro con manchas (RB) con una vaca roja (RR).\na) ¿Cuál es la probabilidad de que nazca un ternero completamente blanco?\nb) ¿Qué proporción de la descendencia será con manchas (roana)?",
+                guideAnswer: "a) Cruce: RB (toro) x RR (vaca)\n• Genotipos resultantes: 50% RR, 50% RB\n• Probabilidad de ternero blanco (BB): 0%.\n\nb) Proporción con manchas (RB): 50%."
+            },
+            {
+                id: "gp_4", topic: "UD3", title: "Problema de Cruzamiento Prueba / Retrocruzamiento",
+                question: "En los guisantes, el alelo para tallo alto (T) domina sobre tallo enano (t). Se dispone de una planta de tallo alto de genotipo desconocido.\na) ¿Qué cruce debemos realizar para averiguar su genotipo (cruzamiento prueba)?\nb) ¿Qué resultados se obtendrían si la planta alta era heterocigótica (Tt)?",
+                guideAnswer: "a) Cruzamiento prueba: Cruzar la planta desconocida con una de fenotipo recesivo: de tallo enano (tt).\n\nb) Si la planta era heterocigótica (Tt x tt):\n• Genotipos: 50% Tt, 50% tt\n• Fenotipos: 50% Tallo alto, 50% Tallo enano."
+            }
+        ];
 
-  const pos = playerPos.toUpperCase().replace(/\s+/g, ' ').trim();
+        // STATE & ANTI-REPETITION LOGIC
+        let usedIds = new Set();
+        let currentPriority = 'ALL';
+        let activeExamData = { testUD12: [], testUD3: [], shortQuestions: [], geneticsProblems: [] };
+        let timerInterval = null;
+        let secondsRemaining = 50 * 60;
 
-  // ========== PORTEROS ==========
-  if (roleKey === "GK") {
-    return pos.includes("POR") || pos.includes("GK") || pos.includes("PORTERO");
-  }
-
-  // ========== CENTRALES ==========
-  if (roleKey === "CB") {
-    return (
-      pos.includes("DF (C)") ||
-      pos.includes("DF (DC)") ||
-      pos.includes("DF (IC)") ||
-      pos.includes("DF (DIC)") ||
-      pos.includes("DF/ME (C)") ||
-      pos.includes("DF/ME(C)") ||
-      pos === "DC" ||
-      pos === "DF C"
-    );
-  }
-
-// ========== CARRILERO DERECHO ==========
-// ========== CARRILERO IZQUIERDO ==========
-if (roleKey === "WBL") {
-  const allowedLeft = [
-    "DF (I)",
-    "DF (IC)",
-    "DF (DI)",
-    "DF (DIC)",
-    "DF/CR (I)",
-    "DF/ME (I)",
-    "DF/MP (I)",
-    "DF/CR/ME (I)",
-    "DF/CR/MP (I)",
-    "DF/ME/MP (I)",
-    "DF/CR/ME/MP (I)",
-    "DF//ME/MP (I)"
-  ];
-
-  return allowedLeft.some(allowed => pos.includes(allowed.toUpperCase()));
-}
-
-  // ========== CARRILERO IZQUIERDO ==========
-  if (roleKey === "WBL") {
-    // Puede jugar por la izquierda
-    const canPlayLeft = (
-      pos.includes("DF (I)") ||
-      pos.includes("DF (IC)") ||
-      pos.includes("DF (DI)") ||
-      pos.includes("DF (DIC)") ||
-      pos.includes("(I)") ||
-      pos.includes("DI") ||
-      pos.includes("DIC")
-    );
-
-    // ========== DELANTERO INTERIOR DERECHO (IFR) ==========
-if (roleKey === "IFR") {
-  const allowedRight = [
-    "MP (DC)",
-    "MP (DIC)",
-    "MP (DI)",
-    "MP (D)",
-    "ME/MP (DI)",
-    "ME/MP (D)",
-    "DF/MP (D)",
-    "DF/CR/ME/MP (D)"
-  ];
-  return allowedRight.some(allowed => pos.includes(allowed.toUpperCase()));
-}
-
-    // Excluir los que son solo de derecha
-    const isPureRight = (
-      (pos.includes("DF (D)") || pos.includes("DF (DC)")) &&
-      !pos.includes("DF (I)") &&
-      !pos.includes("DF (IC)") &&
-      !pos.includes("DI") &&
-      !pos.includes("DIC")
-    );
-
-    return canPlayLeft && !isPureRight;
-  }
-
-  // ========== MEDIOCENTRO / PIVOTE (DM) ==========
-if (roleKey === "DM") {
-  if (roleKey === "CM") {
-  return (
-    pos.includes("ME (C)") ||
-    pos.includes("MC, ME (C)") ||
-    pos.includes("MC,ME (C)") ||
-    pos.includes("ME/MP (C)") ||
-    pos.includes("ME / MP (C)")
-  );
-}
-  return (
-    pos.includes("MC (C)") ||
-    pos.includes("MC, ME (C)") ||
-    pos.includes("MC,ME (C)") ||
-    pos.includes("MC ME (C)")
-  );
-}
-
-  // ========== ORGANIZADOR ADELANTADO (AP) ==========
-if (roleKey === "AP") {
-  return (
-    pos.includes("ME (C)") ||
-    pos.includes("MC, ME (C)") ||
-    pos.includes("MC,ME (C)") ||
-    pos.includes("ME/MP (C)") ||
-    pos.includes("ME / MP (C)")
-  );
-}
-
-  // ========== DELANTERO INTERIOR IZQUIERDO (IFL) ==========
-if (roleKey === "IFL") {
-  const allowedLeft = [
-    "MP (IC)",
-    "MP (I)",
-    "MP (DIC)",
-    "MP (DI)",
-    "ME/MP (I)",
-    "ME/MP (DI)",
-    "DF/MP (I)",
-    "DF/ME/MP (I)"
-  ];
-  return allowedLeft.some(allowed => pos.includes(allowed.toUpperCase()));
-}
-
-  // ========== FALSO NUEVE (F9) ==========
-if (roleKey === "F9") {
-  return (
-    pos.includes("DL (C)") ||
-    pos === "DL C" ||
-    pos === "DLC"
-  );
-}
-
-  // Resto de roles (método normal)
-  return allowed.some(a => pos.includes(a.toUpperCase()));
-}
-
-  function parse(raw) {
-  if (!raw) return [];
-  if (raw.includes('<table') || raw.includes('<tr')) {
-    const div = document.createElement('div');
-    div.innerHTML = raw;
-    const rows = [...div.querySelectorAll('tr')];
-    let header = rows.find(r => r.textContent.includes('Nombre') || r.textContent.includes('Name')) || rows[0];
-    const headers = [...header.querySelectorAll('th,td')].map(c => c.textContent.trim());
-    const start = rows.indexOf(header) + 1;
-    return rows.slice(start).map(row => {
-      const cells = [...row.querySelectorAll('td')];
-      const obj = {};
-      headers.forEach((h,i) => obj[h] = cells[i]?.textContent.trim() || '');
-      return obj;
-    }).filter(p => Object.values(p).some(v => v && v.length > 2));
-  }
-  const lines = raw.split(/\r?\n/).filter(l => l.trim());
-  if (lines.length < 2) return [];
-  const sep = lines[0].includes('\t') ? '\t' : lines[0].includes(';') ? ';' : ',';
-  const headers = lines[0].split(sep).map(h => h.trim());
-  return lines.slice(1).map(l => {
-    const cells = l.split(sep);
-    const obj = {};
-    headers.forEach((h,i) => obj[h] = (cells[i]||'').trim());
-    return obj;
-  });
-}
-
-function calculate() {
-  const raw = document.getElementById('rawData').value.trim();
-  const allPlayers = parse(raw);
-  if (allPlayers.length === 0) return alert('No se detectaron jugadores en el mercado');
-
-  const roleKey = document.getElementById('roleSelect').value;
-  const role = roleProfiles[roleKey];
-  const useDiscard = document.getElementById('useDiscard').checked;
-
-  // 1. Filtro por posición
-  let players = allPlayers.filter(p => matchesPosition(getPlayerPosition(p), role.positions, roleKey));
-
-  // 2. Filtros de descarte (si están activados)
-  if (useDiscard && role.discard) {
-  players = players.filter(p => {
-    return role.discard.every(rule => {
-      const val = findValue(p, rule.keys).val;
-      if (rule.mustBe !== undefined) return val === rule.mustBe;
-      if (rule.mustBeGreaterThan !== undefined) return val > rule.mustBeGreaterThan;
-      if (rule.mustBeBetween !== undefined) {
-        return val >= rule.mustBeBetween[0] && val <= rule.mustBeBetween[1];
-      }
-      return true;
-    });
-  });
-}
-
-  if (players.length === 0) {
-    document.getElementById('results').innerHTML = `
-      <p style="color:#f87171">
-        No hay jugadores que cumplan los filtros de este rol.<br>
-        Se analizaron ${allPlayers.length} jugadores en total.
-      </p>`;
-    document.getElementById('squadList').innerHTML = `<p style="opacity:.6;font-size:13px;">No hay datos</p>`;
-    return;
-  }
-
-  // 3. Calcular puntuación de los jugadores del mercado
-  const scored = players.map(p => {
-    let score = 0;
-    const details = [];
-
-    role.metrics.forEach(m => {
-      const r = findValue(p, m.keys);
-      score += r.val * m.weight;
-      if (r.val !== 0) {
-        details.push(`${r.col || m.keys[0]}: ${r.val.toFixed(2)} (×${m.weight})`);
-      }
-    });
-
-    return {
-      name: getName(p),
-      age: p.Edad || p.Age || '',
-      club: p.Club || '',
-      pos: getPlayerPosition(p),
-      score: Math.round(score * 100) / 100,
-      details
-    };
-  });
-
-  scored.sort((a, b) => b.score - a.score);
-  const top = scored.filter(p => p.name !== 'Desconocido');
-
-  // 4. Jugadores de TU plantilla en esta posición
-  const myPlayersInPos = squadPlayers
-    .filter(s => matchesPosition(getPlayerPosition(s), role.positions, roleKey))
-    .map(s => {
-      let sScore = 0;
-      role.metrics.forEach(m => {
-        sScore += findValue(s, m.keys).val * m.weight;
-      });
-      return {
-        name: getName(s),
-        score: Math.round(sScore * 100) / 100,
-        pos: getPlayerPosition(s)
-      };
-    })
-    .sort((a, b) => b.score - a.score);
-
-  // 5. Panel lateral de tu plantilla
-  let squadHtml = '';
-  if (myPlayersInPos.length === 0) {
-    squadHtml = `<p style="opacity:.6;font-size:13px;">No tienes jugadores en esta posición<br>o no has subido la plantilla</p>`;
-  } else {
-    squadHtml = myPlayersInPos.map(p => `
-      <div style="background:#1e293b; padding:10px; border-radius:8px; margin-bottom:8px;">
-        <div style="font-weight:600;">${p.name}</div>
-        <div style="font-size:13px; opacity:.8;">${p.pos}</div>
-        <div style="font-size:1.2rem; font-weight:700; color:var(--accent); margin-top:4px;">${p.score}</div>
-      </div>
-    `).join('');
-  }
-  document.getElementById('squadList').innerHTML = squadHtml;
-
-  // 6. Resultados del mercado + comparaciones individuales
-  let html = `<p>
-    <strong>${role.name}</strong> · 
-    ${players.length} jugadores válidos (de ${allPlayers.length})
-    ${useDiscard ? ' · Filtros de descarte <strong>ACTIVADOS</strong>' : ' · Filtros desactivados'}
-  </p>
-  <div class="top3">`;
-
-  top.forEach((p, i) => {
-    const cls = p.score >= 30 ? 'score-high' : p.score >= 20 ? 'score-mid' : 'score-low';
-
-    // Comparaciones individuales contra cada jugador de tu plantilla
-    let comparisons = '';
-    if (myPlayersInPos.length > 0) {
-      comparisons = myPlayersInPos.map(myP => {
-        if (p.score > myP.score) {
-          return `<div style="color:var(--good); font-size:12px; margin-top:2px;">↑ Mejor que ${myP.name} (${myP.score})</div>`;
-        } else if (p.score < myP.score) {
-          return `<div style="color:var(--bad); font-size:12px; margin-top:2px;">↓ Peor que ${myP.name} (${myP.score})</div>`;
-        } else {
-          return `<div style="color:var(--mid); font-size:12px; margin-top:2px;">= Igual que ${myP.name} (${myP.score})</div>`;
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
         }
-      }).join('');
-    }
 
-    html += `
-      <div class="player-card">
-        <div style="font-size:12px;opacity:.6">#${i+1}</div>
-        <h3>${p.name}</h3>
-        <div style="font-size:13px;opacity:.8">
-          ${p.age ? p.age + ' años' : ''} 
-          ${p.pos ? '· ' + p.pos : ''} 
-          ${p.club ? '· ' + p.club : ''}
-        </div>
-        <div class="score ${cls}">${p.score}</div>
-        <div style="margin-top:6px;">
-          ${comparisons}
-        </div>
-        <div class="stats-list">
-          ${p.details.map(d => `<div>${d}</div>`).join('')}
-        </div>
-      </div>`;
-  });
+        // Shuffle options for a question while maintaining knowledge of correct choice
+        function prepareQuestionWithOptionsShuffled(q) {
+            const shuffledOpts = shuffleArray(q.options);
+            const correctIndex = shuffledOpts.indexOf(q.correctText);
+            return {
+                ...q,
+                shuffledOptions: shuffledOpts,
+                correctIndex: correctIndex
+            };
+        }
 
-  document.getElementById('results').innerHTML = html + '</div>';
-}
+        function pickUnusedItems(pool, count) {
+            let available = pool.filter(item => !usedIds.has(item.id));
+            if (available.length < count) {
+                // Clear history if pool is exhausted
+                usedIds.clear();
+                available = pool;
+            }
+            const selected = shuffleArray(available).slice(0, count);
+            selected.forEach(item => usedIds.add(item.id));
+            return selected;
+        }
 
-// Listeners
-document.getElementById('fileInput').addEventListener('change', e => {
-  const f = e.target.files[0];
-  if (!f) return;
-  const r = new FileReader();
-  r.onload = ev => document.getElementById('rawData').value = ev.target.result;
-  r.readAsText(f, 'UTF-8');
-});
+        function setPriority(topic) {
+            currentPriority = topic;
+            generateNewExam();
+        }
 
-document.getElementById('squadInput').addEventListener('change', e => {
-  const f = e.target.files[0];
-  if (!f) return;
-  const r = new FileReader();
-  r.onload = ev => {
-    squadPlayers = parse(ev.target.result);
-    console.log('Plantilla cargada:', squadPlayers.length, 'jugadores');
-  };
-  r.readAsText(f, 'UTF-8');
-});
-</script>
+        function startTimer() {
+            clearInterval(timerInterval);
+            secondsRemaining = 50 * 60;
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                secondsRemaining--;
+                updateTimerDisplay();
+                if (secondsRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    alert("¡El tiempo del examen ha finalizado! Se procederá a corregir automáticamente.");
+                    evaluateExam();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(secondsRemaining / 60);
+            const secs = secondsRemaining % 60;
+            document.getElementById('timeRemaining').innerText = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function generateNewExam() {
+            document.getElementById('resultsBanner').classList.add('hidden');
+            
+            // Pick Test UD1-2
+            const selectedUD12 = pickUnusedItems(testUD12Bank, 5);
+            activeExamData.testUD12 = selectedUD12.map(prepareQuestionWithOptionsShuffled);
+
+            // Pick Test UD3
+            const selectedUD3 = pickUnusedItems(testUD3Bank, 5);
+            activeExamData.testUD3 = selectedUD3.map(prepareQuestionWithOptionsShuffled);
+
+            // Pick Short Questions
+            activeExamData.shortQuestions = pickUnusedItems(shortQuestionsBank, 3);
+
+            // Pick Genetics Problems
+            activeExamData.geneticsProblems = pickUnusedItems(geneticsProblemsBank, 2);
+
+            renderExam();
+            startTimer();
+        }
+
+        function renderExam() {
+            // Render Test UD1-2
+            const testUD12Div = document.getElementById('testUD12Container');
+            testUD12Div.innerHTML = activeExamData.testUD12.map((q, idx) => `
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm space-y-3" id="card-${q.id}">
+                    <p class="font-bold text-slate-800"><span class="text-emerald-600 font-extrabold mr-1">${idx + 1}.</span> ${q.question}</p>
+                    <div class="space-y-2 pl-2">
+                        ${q.shuffledOptions.map((opt, oIdx) => `
+                            <label class="flex items-start space-x-2.5 cursor-pointer p-2 rounded-lg hover:bg-white border border-transparent hover:border-slate-200 transition-colors">
+                                <input type="radio" name="ans_${q.id}" value="${oIdx}" class="mt-0.5 text-emerald-600 focus:ring-emerald-500">
+                                <span class="text-slate-700">${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${q.id}" class="hidden mt-3 p-3 rounded-lg text-xs font-medium"></div>
+                </div>
+            `).join('');
+
+            // Render Test UD3
+            const testUD3Div = document.getElementById('testUD3Container');
+            testUD3Div.innerHTML = activeExamData.testUD3.map((q, idx) => `
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm space-y-3" id="card-${q.id}">
+                    <p class="font-bold text-slate-800"><span class="text-emerald-600 font-extrabold mr-1">${idx + 6}.</span> ${q.question}</p>
+                    <div class="space-y-2 pl-2">
+                        ${q.shuffledOptions.map((opt, oIdx) => `
+                            <label class="flex items-start space-x-2.5 cursor-pointer p-2 rounded-lg hover:bg-white border border-transparent hover:border-slate-200 transition-colors">
+                                <input type="radio" name="ans_${q.id}" value="${oIdx}" class="mt-0.5 text-emerald-600 focus:ring-emerald-500">
+                                <span class="text-slate-700">${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${q.id}" class="hidden mt-3 p-3 rounded-lg text-xs font-medium"></div>
+                </div>
+            `).join('');
+
+            // Render Short Questions
+            const sqDiv = document.getElementById('shortQuestionsContainer');
+            sqDiv.innerHTML = activeExamData.shortQuestions.map((q, idx) => `
+                <div class="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3 text-sm" id="card-${q.id}">
+                    <div class="flex justify-between items-start">
+                        <h3 class="font-bold text-slate-800"><span class="text-emerald-600 font-extrabold mr-1">Pregunta ${idx + 1}:</span> ${q.title}</h3>
+                        <span class="text-xs bg-slate-200/80 text-slate-700 font-bold px-2 py-1 rounded">1.2 Puntos</span>
+                    </div>
+                    <p class="text-slate-700 text-xs md:text-sm whitespace-pre-line">${q.question}</p>
+                    <textarea id="userAns_${q.id}" rows="4" class="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm bg-white" placeholder="Escribe tu respuesta aquí..."></textarea>
+                    
+                    <div id="rubric-${q.id}" class="hidden pt-3 border-t border-slate-200 space-y-3">
+                        <div class="bg-emerald-50/80 p-3.5 rounded-xl border border-emerald-200 text-xs text-emerald-950">
+                            <span class="font-extrabold text-emerald-800 block mb-1">Solución Oficial de Referencia:</span>
+                            <p class="whitespace-pre-line leading-relaxed">${q.guideAnswer}</p>
+                        </div>
+                        <div class="flex items-center space-x-4 bg-white p-3 rounded-xl border border-slate-200">
+                            <span class="text-xs font-bold text-slate-700">Autoevaluación:</span>
+                            <select id="score_${q.id}" class="bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold rounded-lg p-1.5 focus:ring-emerald-500">
+                                <option value="1.2">100% Correcto (1.2 Pts)</option>
+                                <option value="0.9">75% Correcto (0.9 Pts)</option>
+                                <option value="0.6">50% Regular (0.6 Pts)</option>
+                                <option value="0.3">25% Incompleto (0.3 Pts)</option>
+                                <option value="0.0">0% Incorrecto (0.0 Pts)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Genetics Problems
+            const gpDiv = document.getElementById('geneticsProblemsContainer');
+            gpDiv.innerHTML = activeExamData.geneticsProblems.map((q, idx) => `
+                <div class="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3 text-sm" id="card-${q.id}">
+                    <div class="flex justify-between items-start">
+                        <h3 class="font-bold text-slate-800"><span class="text-emerald-600 font-extrabold mr-1">Problema ${idx + 1}:</span> ${q.title}</h3>
+                        <span class="text-xs bg-slate-200/80 text-slate-700 font-bold px-2 py-1 rounded">1.2 Puntos</span>
+                    </div>
+                    <p class="text-slate-700 text-xs md:text-sm whitespace-pre-line leading-relaxed bg-white p-3 rounded-lg border border-slate-200">${q.question}</p>
+                    <textarea id="userAns_${q.id}" rows="5" class="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm bg-white font-mono text-xs" placeholder="Desarrolla los genotipos de los padres, gametos, cuadro de Punnett y proporciones de la descendencia..."></textarea>
+                    
+                    <div id="rubric-${q.id}" class="hidden pt-3 border-t border-slate-200 space-y-3">
+                        <div class="bg-emerald-50/80 p-3.5 rounded-xl border border-emerald-200 text-xs text-emerald-950">
+                            <span class="font-extrabold text-emerald-800 block mb-1">Resolución Oficial de Referencia:</span>
+                            <p class="whitespace-pre-line leading-relaxed font-mono text-xs">${q.guideAnswer}</p>
+                        </div>
+                        <div class="flex items-center space-x-4 bg-white p-3 rounded-xl border border-slate-200">
+                            <span class="text-xs font-bold text-slate-700">Autoevaluación:</span>
+                            <select id="score_${q.id}" class="bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold rounded-lg p-1.5 focus:ring-emerald-500">
+                                <option value="1.2">100% Correcto (1.2 Pts)</option>
+                                <option value="0.9">75% Correcto (0.9 Pts)</option>
+                                <option value="0.6">50% Regular (0.6 Pts)</option>
+                                <option value="0.3">25% Incompleto (0.3 Pts)</option>
+                                <option value="0.0">0% Incorrecto (0.0 Pts)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function evaluateExam() {
+            clearInterval(timerInterval);
+
+            let scoreTestUD12 = 0;
+            let scoreTestUD3 = 0;
+
+            // Evaluate Test UD1-2
+            activeExamData.testUD12.forEach(q => {
+                const selected = document.querySelector(`input[name="ans_${q.id}"]:checked`);
+                const feedbackDiv = document.getElementById(`feedback-${q.id}`);
+                feedbackDiv.classList.remove('hidden');
+
+                if (selected && parseInt(selected.value) === q.correctIndex) {
+                    scoreTestUD12 += 0.4;
+                    feedbackDiv.className = "mt-3 p-3 rounded-lg text-xs font-medium bg-emerald-100 text-emerald-900 border border-emerald-200";
+                    feedbackDiv.innerHTML = `<strong>¡Correcto! (+0.4 pts)</strong> ${q.explanation}`;
+                } else {
+                    feedbackDiv.className = "mt-3 p-3 rounded-lg text-xs font-medium bg-rose-100 text-rose-900 border border-rose-200";
+                    feedbackDiv.innerHTML = `<strong>Incorrecto (0.0 pts).</strong> Respuesta correcta: <em>${q.correctText}</em>. ${q.explanation}`;
+                }
+            });
+
+            // Evaluate Test UD3
+            activeExamData.testUD3.forEach(q => {
+                const selected = document.querySelector(`input[name="ans_${q.id}"]:checked`);
+                const feedbackDiv = document.getElementById(`feedback-${q.id}`);
+                feedbackDiv.classList.remove('hidden');
+
+                if (selected && parseInt(selected.value) === q.correctIndex) {
+                    scoreTestUD3 += 0.4;
+                    feedbackDiv.className = "mt-3 p-3 rounded-lg text-xs font-medium bg-emerald-100 text-emerald-900 border border-emerald-200";
+                    feedbackDiv.innerHTML = `<strong>¡Correcto! (+0.4 pts)</strong> ${q.explanation}`;
+                } else {
+                    feedbackDiv.className = "mt-3 p-3 rounded-lg text-xs font-medium bg-rose-100 text-rose-900 border border-rose-200";
+                    feedbackDiv.innerHTML = `<strong>Incorrecto (0.0 pts).</strong> Respuesta correcta: <em>${q.correctText}</em>. ${q.explanation}`;
+                }
+            });
+
+            // Reveal Rubrics
+            activeExamData.shortQuestions.forEach(q => {
+                document.getElementById(`rubric-${q.id}`).classList.remove('hidden');
+            });
+            activeExamData.geneticsProblems.forEach(q => {
+                document.getElementById(`rubric-${q.id}`).classList.remove('hidden');
+            });
+
+            const updateSelfScores = () => {
+                let currentShort = 0;
+                let currentProblems = 0;
+                activeExamData.shortQuestions.forEach(q => {
+                    currentShort += parseFloat(document.getElementById(`score_${q.id}`).value);
+                });
+                activeExamData.geneticsProblems.forEach(q => {
+                    currentProblems += parseFloat(document.getElementById(`score_${q.id}`).value);
+                });
+
+                const total = scoreTestUD12 + scoreTestUD3 + currentShort + currentProblems;
+                document.getElementById('finalScoreDisplay').innerText = total.toFixed(1);
+                document.getElementById('scoreShort').innerText = `${currentShort.toFixed(1)} / 3.6`;
+                document.getElementById('scoreProblems').innerText = `${currentProblems.toFixed(1)} / 2.4`;
+
+                const feedbackElem = document.getElementById('gradeFeedback');
+                if (total >= 9) {
+                    feedbackElem.innerText = "¡Excelente! Dominas perfectamente todos los bloques.";
+                    feedbackElem.className = "text-sm font-bold mt-1 text-emerald-600";
+                } else if (total >= 7) {
+                    feedbackElem.innerText = "¡Muy buen trabajo! Tienes una sólida comprensión del temario.";
+                    feedbackElem.className = "text-sm font-bold mt-1 text-teal-600";
+                } else if (total >= 5) {
+                    feedbackElem.innerText = "Aprobado. Repasa las preguntas falladas para consolidar el Sobresaliente.";
+                    feedbackElem.className = "text-sm font-bold mt-1 text-amber-600";
+                } else {
+                    feedbackElem.innerText = "Se requiere refuerzo. Utiliza el selector lateral para repasar la unidad correspondiente.";
+                    feedbackElem.className = "text-sm font-bold mt-1 text-rose-600";
+                }
+            };
+
+            activeExamData.shortQuestions.concat(activeExamData.geneticsProblems).forEach(q => {
+                const selectElem = document.getElementById(`score_${q.id}`);
+                selectElem.onchange = updateSelfScores;
+            });
+
+            document.getElementById('scoreTestUD12').innerText = `${scoreTestUD12.toFixed(1)} / 2.0`;
+            document.getElementById('scoreTestUD3').innerText = `${scoreTestUD3.toFixed(1)} / 2.0`;
+            updateSelfScores();
+
+            document.getElementById('resultsBanner').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onload = function() {
+            generateNewExam();
+        };
+    </script>
 </body>
 </html>
